@@ -3,8 +3,16 @@ gateways:
         connection:
             type: duckdb
             database: db.db
+    local_postgres:
+        connection:
+            type: postgres
+            host: localhost
+            database: jf
+            user: sqlmesh
+            password: sqlmesh
+            port: 5432
 
-default_gateway: local
+default_gateway: local_postgres
 
 model_defaults:
     dialect: postgres

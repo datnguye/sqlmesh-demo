@@ -152,6 +152,48 @@ sqlmesh test
     - Found a limitation: `@EACH(@payment_methods, x -> ... as @x_amount)` will fail but work like a charm when change to `@EACH(@payment_methods, x -> ... as amount_@x)` ⚠️
   - Seems that the CLI logs was not exposed somewhere - hard to debug when something wrong happened 🤔
   - In the model kind of `INCREMENTAL_BY_UNIQUE_KEY`, the `unique_key` config is a tuple e.g. `(key1, key2)`, if I made it as an array `[key1, key2]`, it would hang your `sqlmesh` command(s) ⚠️
+  - Something wrong when I tried to use Postgres (instead of DuckDB). See following output: 🤔
+  
+    ```bash
+    sqlmesh plan --auto-apply
+    ======================================================================
+    Successfully Ran 1 tests against duckdb
+    ----------------------------------------------------------------------
+    New environment `prod` will be created from `prod`
+    Summary of differences against `prod`:
+    └── Added Models:
+        ├── sqlmesh_example.full_model
+        ├── jf.stg_customers
+        ├── sqlmesh_example.incremental_model
+        ├── jf.customers
+        ├── jf.stg_payments
+        ├── sqlmesh_example.seed_model
+        ├── jf.raw_customers
+        ├── jf.orders
+        ├── jf.stg_orders
+        ├── jf.raw_payments
+        └── jf.raw_orders
+    Models needing backfill (missing dates):
+    ├── jf.raw_customers: 2023-08-25 - 2023-08-25
+    ├── jf.raw_orders: 2023-08-25 - 2023-08-25
+    ├── jf.raw_payments: 2023-08-25 - 2023-08-25
+    ├── sqlmesh_example.seed_model: 2023-08-25 - 2023-08-25
+    ├── jf.stg_customers: 2023-08-25 - 2023-08-25
+    ├── jf.stg_orders: 2023-08-25 - 2023-08-25
+    ├── jf.stg_payments: 2023-08-25 - 2023-08-25
+    ├── sqlmesh_example.incremental_model: 2020-01-01 - 2023-08-25
+    ├── jf.customers: 2023-08-25 - 2023-08-25
+    ├── jf.orders: 2023-08-25 - 2023-08-25
+    └── sqlmesh_example.full_model: 2020-01-01 - 2023-08-25
+    Failed to create schema 'sqlmesh__jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
+    DETAIL:  Key (nspname)=(sqlmesh__jf) already exists.
+
+    Failed to create schema 'sqlmesh__jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
+    DETAIL:  Key (nspname)=(sqlmesh__jf) already exists.
+
+    Creating new model versions ━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━ 36.4% •  4/11 • 0:00:00
+    Error: Failed processing name='jf.raw_customers' identifier='3955716165'. current transaction is aborted, commands ignored until end of transaction block
+    ```
 
 - Adding audits and tests: _TBC_
 
