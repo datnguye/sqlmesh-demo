@@ -119,16 +119,16 @@ sqlmesh test
 - New concept with `plan` & `apply`, and the virtual environment defaults to `prod` 👍
 - It creates DuckDB files by default and do transformation smoothly 🎉
 - Project skeleton looks similar to dbt, but not quite, there are new things such as: `audit`, only `config.yml` (not dealing with `dbt_project.yml` and `profiles.yml`) 🎉
-- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file 👍
-- Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here! 👍
+- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file, same for source files, no model global config 👍
+- Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here! 🎉
 - Great Web IDE with data lineage 🎉
-- Oh wow! `sqlmesh prompt` command 🎉
+- Oh wow! `sqlmesh prompt` command - LLM 🎉
 
 **Struggling?!**:
 
 - How to run a specific model and debug the compiled sql code?
   - `sqlmesh run` command only allow to run all stuff with a date range
-  - `sqlmesh plan` command seems to be the same. Oh! `sqlmesh plan --select-mdoel <model>` will do
+  - `sqlmesh plan` command seems to be the same. Oh! `sqlmesh plan --select-model <model>` will do
   - `sqlmesh render <model>` command seems to be helpful to see the SQL compiled code
   - `sqlmesh evaluate <model>` command is my goal here, voila!
 - How to generate the project documentation site and host it in Github Page? With `sqlmesh ui` command? It seems impossible as of v0.28?!
@@ -152,48 +152,19 @@ sqlmesh test
     - Found a limitation: `@EACH(@payment_methods, x -> ... as @x_amount)` will fail but work like a charm when change to `@EACH(@payment_methods, x -> ... as amount_@x)` ⚠️
   - Seems that the CLI logs was not exposed somewhere - hard to debug when something wrong happened 🤔
   - In the model kind of `INCREMENTAL_BY_UNIQUE_KEY`, the `unique_key` config is a tuple e.g. `(key1, key2)`, if I made it as an array `[key1, key2]`, it would hang your `sqlmesh` command(s) ⚠️
-  - Something wrong when I tried to use Postgres (instead of DuckDB). See following output: 🤔
-  
+  - Plan & Apply in Postgress randomly have error message ❗, do it again with a success ⚠️
+
     ```bash
-    sqlmesh plan --auto-apply
-    ======================================================================
-    Successfully Ran 1 tests against duckdb
-    ----------------------------------------------------------------------
-    New environment `prod` will be created from `prod`
-    Summary of differences against `prod`:
-    └── Added Models:
-        ├── sqlmesh_example.full_model
-        ├── jf.stg_customers
-        ├── sqlmesh_example.incremental_model
-        ├── jf.customers
-        ├── jf.stg_payments
-        ├── sqlmesh_example.seed_model
-        ├── jf.raw_customers
-        ├── jf.orders
-        ├── jf.stg_orders
-        ├── jf.raw_payments
-        └── jf.raw_orders
-    Models needing backfill (missing dates):
-    ├── jf.raw_customers: 2023-08-25 - 2023-08-25
-    ├── jf.raw_orders: 2023-08-25 - 2023-08-25
-    ├── jf.raw_payments: 2023-08-25 - 2023-08-25
-    ├── sqlmesh_example.seed_model: 2023-08-25 - 2023-08-25
-    ├── jf.stg_customers: 2023-08-25 - 2023-08-25
-    ├── jf.stg_orders: 2023-08-25 - 2023-08-25
-    ├── jf.stg_payments: 2023-08-25 - 2023-08-25
-    ├── sqlmesh_example.incremental_model: 2020-01-01 - 2023-08-25
-    ├── jf.customers: 2023-08-25 - 2023-08-25
-    ├── jf.orders: 2023-08-25 - 2023-08-25
-    └── sqlmesh_example.full_model: 2020-01-01 - 2023-08-25
-    Failed to create schema 'sqlmesh__jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
-    DETAIL:  Key (nspname)=(sqlmesh__jf) already exists.
+    Failed to create schema 'jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
+    DETAIL:  Key (nspname)=(jf) already exists.
 
-    Failed to create schema 'sqlmesh__jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
-    DETAIL:  Key (nspname)=(sqlmesh__jf) already exists.
-
-    Creating new model versions ━━━━━━━━━━━━━━╸━━━━━━━━━━━━━━━━━━━━━━━━━ 36.4% •  4/11 • 0:00:00
-    Error: Failed processing name='jf.raw_customers' identifier='3955716165'. current transaction is aborted, commands ignored until end of transaction block
+    Failed to create schema 'jf': duplicate key value violates unique constraint "pg_namespace_nspname_index"
+    DETAIL:  Key (nspname)=(jf) already exists.
     ```
+
+  - Schema name is auto-prefixed by `sqlmesh__` e.g. `sqlmesh__jf` 👀
+  - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500`
+    - This could be due the Virtual Environment concept. Leaving a question: How to persist table name same as the configured value ❓
 
 - Adding audits and tests: _TBC_
 

@@ -1,8 +1,6 @@
 MODEL (
   name jf.customers,
-  kind INCREMENTAL_BY_UNIQUE_KEY (
-    unique_key customer_id
-  ),
+  kind FULL,
   cron '@daily',
   grain ARRAY[customer_id]
 );
