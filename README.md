@@ -163,7 +163,7 @@ sqlmesh test
     ```
 
   - Schema name is auto-prefixed by `sqlmesh__` e.g. `sqlmesh__jf` 👀
-  - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500`
+  - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500` 👀
     - This could be due the Virtual Environment concept. Leaving a question: How to persist table name same as the configured value ❓
 
 - Adding audits and tests: _TBC_
