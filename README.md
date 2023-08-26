@@ -1,6 +1,10 @@
 # sqlmesh-demo
 
-POC of sqlmesh with Jaffle Shop
+POC of sqlmesh with Jaffle Shop as an engineer step out from the dbt world!
+
+I am using Windows 11 machine...
+
+## 1. Getting familiar with sqlmesh CLI
 
 ```bash
 # 1. Create virtual environment & Activate it
@@ -67,7 +71,7 @@ sqlmesh info
     # Macros: 11
     # Data warehouse connection succeeded
     # Test connection succeeded
-sqlmesh plan
+sqlmesh plan [dev]
     # ======================================================================
     # Successfully Ran 1 tests against duckdb
     # ----------------------------------------------------------------------
@@ -93,21 +97,49 @@ sqlmesh run
 sqlmesh audit
     # Found 1 audit(s).
     # assert_positive_order_ids PASS.
-
     # Finished with 0 audit errors and 0 audits skipped.
     # Done.
 sqlmesh test
     # .
     # ----------------------------------------------------------------------
     # Ran 1 test in 0.162s
-
     # OK
+```
 
-# 4. Add Jaffle Shop data & the models mimic dbt demo
+**First impressions**:
+
+- So far so good, the installation tooks quite a bit long, especially when installed the `pandas`
+- Lots of useful CLI commands
+- New concept with `plan` & `apply`, and the virtual environment defaults to `prod`
+- It creates DuckDB files by default and do transformation smoothly
+- Project skeleton looks similar to dbt, but not quite, there are new things such as: `audit`, only `config.yml` (not dealing with `dbt_project.yml` and `profiles.yml`)
+- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file
+- Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here!
+- Great Web IDE with data lineage
+
+**Struggling?!**:
+
+- How to run a specific model and debug the compiled sql code?
+  - `sqlmesh run` command only allow to run all stuff with a date range
+  - `sqlmesh plan` command seems to be the same
+  - `sqlmesh render <model>` command seems to be helpful to see the SQL compiled code
+  - `sqlmesh evaluate <model>` command is my goal here, voila!
+- How to generate the project documentation site and host it in Github Page? With `sqlmesh ui` command?
+- What are the steps we should perform in CI/CD? I will find out later!
+
+## 2. Mimic model development with Jaffle Shop
+
+```bash
+# 1. Add Jaffle Shop data & the models mimic dbt demo
 # check repo at (repo)/TBU
+```
 
-# 5. Add CI with Github Workflow
+## 3. Setup CI
+
+```bash
+# 1. Add CI with Github Workflow
 # check repo at (repo)/.github/workflows
+
 ```
 
 
