@@ -1,18 +1,17 @@
 MODEL (
-    name sqlmesh_example.incremental_model,
-    kind INCREMENTAL_BY_TIME_RANGE (
-        time_column ds
-    ),
-    start '2020-01-01',
-    cron '@daily',
-    grain [id, ds]
+  name sqlmesh_example.incremental_model,
+  kind INCREMENTAL_BY_TIME_RANGE (
+    time_column ds
+  ),
+  start '2020-01-01',
+  cron '@daily',
+  grain ARRAY[id, ds]
 );
 
 SELECT
-    id,
-    item_id,
-    ds,
-FROM
-    sqlmesh_example.seed_model
+  id AS id,
+  item_id AS item_id,
+  ds AS ds
+FROM sqlmesh_example.seed_model
 WHERE
-    ds between @start_ds and @end_ds
+  ds BETWEEN @start_ds AND @end_ds

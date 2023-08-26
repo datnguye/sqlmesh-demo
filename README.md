@@ -1,8 +1,14 @@
 # sqlmesh-demo
 
-POC of sqlmesh with Jaffle Shop as an engineer step out from the dbt world!
+POC of `sqlmesh` with Jaffle Shop as an engineer step out from the `dbt` world!
 
-I am using Windows 11 machine...
+Actually try to mimic [dbt Jaffle Shop project](https://github.com/dbt-labs/jaffle_shop) and get the first impression of this cool tool 🌟
+
+Environment used:
+
+- sqlmesh v0.28
+- Windows 11
+- VSCode with dbt extensions installed
 
 ## 1. Getting familiar with sqlmesh CLI
 
@@ -108,33 +114,50 @@ sqlmesh test
 
 **First impressions**:
 
-- So far so good, the installation tooks quite a bit long, especially when installed the `pandas`
-- Lots of useful CLI commands
-- New concept with `plan` & `apply`, and the virtual environment defaults to `prod`
-- It creates DuckDB files by default and do transformation smoothly
-- Project skeleton looks similar to dbt, but not quite, there are new things such as: `audit`, only `config.yml` (not dealing with `dbt_project.yml` and `profiles.yml`)
-- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file
-- Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here!
-- Great Web IDE with data lineage
+- So far so good, the installation tooks quite a bit long, especially when installed the `pandas` 🏃‍♂️
+- Lots of useful CLI commands 👍
+- New concept with `plan` & `apply`, and the virtual environment defaults to `prod` 👍
+- It creates DuckDB files by default and do transformation smoothly 🎉
+- Project skeleton looks similar to dbt, but not quite, there are new things such as: `audit`, only `config.yml` (not dealing with `dbt_project.yml` and `profiles.yml`) 🎉
+- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file 👍
+- Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here! 👍
+- Great Web IDE with data lineage 🎉
+- Oh wow! `sqlmesh prompt` command 🎉
 
 **Struggling?!**:
 
 - How to run a specific model and debug the compiled sql code?
   - `sqlmesh run` command only allow to run all stuff with a date range
-  - `sqlmesh plan` command seems to be the same
+  - `sqlmesh plan` command seems to be the same. Oh! `sqlmesh plan --select-mdoel <model>` will do
   - `sqlmesh render <model>` command seems to be helpful to see the SQL compiled code
   - `sqlmesh evaluate <model>` command is my goal here, voila!
-- How to generate the project documentation site and host it in Github Page? With `sqlmesh ui` command?
+- How to generate the project documentation site and host it in Github Page? With `sqlmesh ui` command? It seems impossible as of v0.28?!
 - What are the steps we should perform in CI/CD? I will find out later!
 
 ## 2. Mimic model development with Jaffle Shop
 
-```bash
-# 1. Add Jaffle Shop data & the models mimic dbt demo
-# check repo at (repo)/TBU
-```
+- Adding seeds & models
+  - It is not so quick to add the seeds because I neeed to create the coresponding model files with explicitly specifying the list of columns and datatypes 😢
+  - `sqlmesh evaluate raw_customers` produces an error "Cannot find snapshot for 'raw_customers'" 😢
+    - Oh! I need to have the model name passed in! So, I should run `sqlmesh evaluate jf.raw_customers` ✅
+  - To see the compiled sql code, let's use `sqlmesh render jf.stg_customers` 👍
+  - Try to duplicate the model name within the model config, and `sqlmesh plan` will complain: `Error: Duplicate key 'jf.raw_customers' found in UniqueKeyDict<models>. Call dict.update(...) if this is intentional.` 👍
+  - Auto-completion works very nicely when coding the model 🎉
+  - A built-in linter with `sqlmesh format`, hmm...the result looks not great in my imagination, but still looks ok!👍
+  - No incremental run or full refresh run, it is to deal with date range or full load by default 👍
+  - Greate readability expo with zero Jinja code 🎉
+  - Not a great expo with CLI typing because the command is long, easy to wrongly type and hence takes time 👎, but it is fine with Web IDE 💕
+  - Aha! Semi-colonm is important bit here if it is not related to SQL e.g. model config, macros 👀
+  - [Loop or Control flow ops](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#control-flow-operators) is cool even it takes sometime to get familiar with 👍
+    - Found a limitation: `@EACH(@payment_methods, x -> ... as @x_amount)` will fail but work like a charm when change to `@EACH(@payment_methods, x -> ... as amount_@x)` ⚠️
+  - Seems that the CLI logs was not exposed somewhere - hard to debug when something wrong happened 🤔
+  - In the model kind of `INCREMENTAL_BY_UNIQUE_KEY`, the `unique_key` config is a tuple e.g. `(key1, key2)`, if I made it as an array `[key1, key2]`, it would hang your `sqlmesh` command(s) ⚠️
+
+- Adding audits and tests: _TBC_
 
 ## 3. Setup CI
+
+TBC
 
 ```bash
 # 1. Add CI with Github Workflow
@@ -142,5 +165,4 @@ sqlmesh test
 
 ```
 
-
-Happy Engineering :tada:
+Happy Engineering 🎉
