@@ -170,7 +170,51 @@ sqlmesh test
       - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500` 👀
   - Recommended to [join Slack community](https://tobikodata.com/slack), the team is very supportive when I asked questions🙏
 
-- Adding audits and tests: _TBC_
+- **Adding audits and tests**:
+  - Audit is reusable - `@this_model` is represented to the attached model 🎉
+    - Let's get familiar with `audit` command e.g. `sqlmesh audit --model jf.orders` 🏃
+    - I need to add it to each model config 👀
+    - It is NOT fully reusable if the column name is vary ⚠️
+      - NO! Actually it allows to parameterize the audit with variable e.g. `@column is null` and then in the model config using `audits [assert_not_null(column=order_id)]`
+    - Similar idea to dbt singular test - write the sql to fail the case 👍
+      - I can join with other models if needed ✅
+    - Modifying an audit requires to apply a plan first ❓
+    - Quite easy to create the similar dbt generic tests in the audit: `not null`, `unique`, `accepted values`, `relationships` 👍
+    - The log output of audit seems not to mention the attached model ❓
+
+      ```log
+      (.env) C:\Users\DAT\Documents\Sources\sqlmesh-demo>sqlmesh audit                  
+      Found 21 audit(s).
+      assert_positive_order_ids PASS.
+      assert_not_null PASS.
+      assert_unique PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_not_null PASS.
+      assert_accepted_values PASS.
+      assert_unique PASS.
+      assert_relationships PASS.
+      assert_not_null PASS.
+      assert_unique PASS.
+      assert_not_null PASS.
+      assert_unique PASS.
+      assert_accepted_values PASS.
+      assert_not_null PASS.
+      assert_unique PASS.
+      assert_accepted_values PASS.
+
+      Finished with 0 audit errors and 0 audits skipped.
+      Done.
+      ```
+
+  - Test is really `unit test` 🎉
+    - I need to add yml file(s) to the `(repo)/tests` drectory 👀
+    - Might take time to implement because it requires to fake data: input and output ⚠️
+    - Let's get familiar with `test` command e.g. `sqlmesh test -k test_jf` 🏃
 
 ## 3. Setup CI
 

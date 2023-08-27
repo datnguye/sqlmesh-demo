@@ -2,7 +2,19 @@ MODEL (
   name jf.orders,
   kind FULL,
   cron '@daily',
-  grain ARRAY[order_id, customer_id]
+  grain ARRAY[order_id, customer_id],
+  audits ARRAY[
+    ASSERT_NOT_NULL(column = order_id),
+    ASSERT_NOT_NULL(column = customer_id),
+    ASSERT_NOT_NULL(column = amount),
+    ASSERT_NOT_NULL(column = amount_credit_card),
+    ASSERT_NOT_NULL(column = amount_coupon),
+    ASSERT_NOT_NULL(column = amount_bank_transfer),
+    ASSERT_NOT_NULL(column = amount_gift_card),
+    ASSERT_ACCEPTED_VALUES(column = status, accepted_values = ARRAY['placed','shipped','completed','return_pending','returned']),
+    ASSERT_UNIQUE(columns = [order_id]),
+    ASSERT_RELATIONSHIPS(column_name = customer_id, to = jf.customers, field = customer_id)
+  ]
 );
 
 @DEF(payment_methods, ARRAY['credit_card', 'coupon', 'bank_transfer', 'gift_card']);
