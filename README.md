@@ -136,7 +136,7 @@ sqlmesh test
 
 ## 2. Mimic model development with Jaffle Shop
 
-- Adding seeds & models
+- **Adding seeds & models**
   - It is not so quick to add the seeds because I neeed to create the coresponding model files with explicitly specifying the list of columns and datatypes 😢
   - `sqlmesh evaluate raw_customers` produces an error "Cannot find snapshot for 'raw_customers'" 😢
     - Oh! I need to have the model name passed in! So, I should run `sqlmesh evaluate jf.raw_customers` ✅
@@ -151,6 +151,7 @@ sqlmesh test
   - [Loop or Control flow ops](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#control-flow-operators) is cool even it takes sometime to get familiar with 👍
     - Found a limitation: `@EACH(@payment_methods, x -> ... as @x_amount)` will fail but work like a charm when change to `@EACH(@payment_methods, x -> ... as amount_@x)` ⚠️
   - Seems that the CLI logs was not exposed somewhere - hard to debug when something wrong happened 🤔
+    - There we go! Let's set the env variable `SQLMESH_DEBUG=1` ✅
   - In the model kind of `INCREMENTAL_BY_UNIQUE_KEY`, the `unique_key` config is a tuple e.g. `(key1, key2)`, if I made it as an array `[key1, key2]`, it would hang your `sqlmesh` command(s) ⚠️
   - Plan & Apply in Postgress randomly have error message ❗, do it again with a success ⚠️
 
@@ -162,9 +163,12 @@ sqlmesh test
     DETAIL:  Key (nspname)=(jf) already exists.
     ```
 
-  - Schema name is auto-prefixed by `sqlmesh__` e.g. `sqlmesh__jf` 👀
-  - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500` 👀
-    - This could be due the Virtual Environment concept. Leaving a question: How to persist table name same as the configured value ❓
+    - This is to be dealing with the concurrency config (default to 4 tasks), definitely an issue with Postgres adapter, but we can workaround by set it to `1` ✅
+  - Take sometime to get familiar with new concept [Virtual Environment](https://tobikodata.com/virtual-data-environments.html). There are several schemas get created within `plan` operation including: your configured schema & the environment schemas 👍
+    - Each env schema will be physically as:
+      - Schema name is auto-prefixed by `sqlmesh__` e.g. `sqlmesh__jf` 👀
+      - Table name is auto-prefixed by the configured schema name, and auto-suffixed with a hash e.g. `jf__orders__1347386500` 👀
+  - Recommended to [join Slack community](https://tobikodata.com/slack), the team is very supportive when I asked questions🙏
 
 - Adding audits and tests: _TBC_
 
