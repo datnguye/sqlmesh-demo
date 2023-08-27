@@ -134,7 +134,7 @@ sqlmesh test
 - How to generate the project documentation site and host it in Github Page? With `sqlmesh ui` command? It seems impossible as of v0.28?!
 - What are the steps we should perform in CI/CD? I will find out later!
 
-## 2. Mimic model development with Jaffle Shop
+## 2. Model development and Testing
 
 - **Adding seeds & models**
   - It is not so quick to add the seeds because I neeed to create the coresponding model files with explicitly specifying the list of columns and datatypes 😢
@@ -212,18 +212,16 @@ sqlmesh test
       ```
 
   - Test is really `unit test` 🎉
-    - I need to add yml file(s) to the `(repo)/tests` drectory 👀
+    - I need to add yml file(s) to the `(repo)/tests` directory 👀
     - Might take time to implement because it requires to fake data: input and output ⚠️
-    - Let's get familiar with `test` command e.g. `sqlmesh test -k test_jf` 🏃
+    - Let's get familiar with `test` command e.g. `sqlmesh test -k test_full` 🏃
 
 ## 3. Setup CI
 
 TBC
 
-```bash
-# 1. Add CI with Github Workflow
-# check repo at (repo)/.github/workflows
+## 4. Deployment
 
-```
+TBC
 
 Happy Engineering 🎉
