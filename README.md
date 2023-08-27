@@ -1,10 +1,10 @@
 # sqlmesh-demo
 
-POC of `sqlmesh` with Jaffle Shop as an engineer step out from the `dbt` world!
+POC of `sqlmesh` with Jaffle Shop data as an engineer trying stepping out from the `dbt` world!
 
 Actually try to mimic [dbt Jaffle Shop project](https://github.com/dbt-labs/jaffle_shop) and get the first impression of this cool tool 🌟
 
-Environment used:
+_Environment used_:
 
 - sqlmesh v0.28
 - Windows 11
