@@ -34,6 +34,9 @@ WITH orders AS (
       @payment_methods,
       x -> SUM(CASE WHEN payment_method = x THEN amount ELSE 0 END) AS amount_@x
     ),
+    --try python macro
+    @make_order_amount(credit_card),
+    @make_order_amount(coupon),
     SUM(amount) AS total_amount
   FROM payments
   GROUP BY

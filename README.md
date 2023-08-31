@@ -211,10 +211,19 @@ sqlmesh test
       Done.
       ```
 
-  - Test is really `unit test` 🎉
+  - Test is really `unit test` (with `duckdb` dialect) 🎉
     - I need to add yml file(s) to the `(repo)/tests` directory 👀
-    - Might take time to implement because it requires to fake data: input and output ⚠️
+    - Might take time to implement because it requires to manually fake the data: both input and output ⚠️
     - Let's get familiar with `test` command e.g. `sqlmesh test -k test_full` 🏃
+    - It has a risk of new SQL Syntax (in the modern DWH) is not supported in DuckDB ⚠️
+
+- **Additional stuff**:
+  - DRY with common functions
+    - Let's try [Python macro](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#python-macro-functions) 👀
+      - So far it's pefect 👍 until when trying with passing List arguments -- it is just hanging ⚠️
+      - The syntax takes for a while to get familiar with (same expo when I started writting jinja) but the readability is better ✅
+  - Column Level Security (aka Masking Policy), for example, in Snowflake ❓
+  - TBC
 
 ## 3. Setup CI
 
