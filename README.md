@@ -6,9 +6,11 @@ Actually try to mimic [dbt Jaffle Shop project](https://github.com/dbt-labs/jaff
 
 _Environment used_:
 
-- sqlmesh v0.28
+- sqlmesh v0.30
 - Windows 11
 - VSCode with dbt extensions installed
+
+⏸️
 
 ## 1. Getting familiar with sqlmesh CLI
 
@@ -180,6 +182,7 @@ sqlmesh test
       - I can join with other models if needed ✅
     - Modifying an audit requires to apply a plan first ❓
     - Quite easy to create the similar dbt generic tests in the audit: `not null`, `unique`, `accepted values`, `relationships` 👍
+      - Actually they have those [buit-in audits here](https://sqlmesh.readthedocs.io/en/stable/concepts/audits/#built-in-audits) 🎉
     - The log output of audit seems not to mention the attached model ❓
 
       ```log
