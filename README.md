@@ -311,5 +311,6 @@ Currently only Github Actions is supported ⚠️
       - Approval (optional)
       - SQLMesh PR Environment Synced done successfully
 
+👉 [Sample PR here](https://github.com/datnguye/sqlmesh-demo/pull/1)
 
 **Happy Engineering** 🎉
