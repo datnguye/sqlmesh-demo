@@ -252,7 +252,7 @@ sqlmesh test
         def apply_masking_policy(evaluator, column: str, func: str, params: str):
             param_list = str(params).split("|")
             return """
-                INSERT INTO {table}(id) VALUES ('{value}')
+                INSERT INTO {table}(id) VALUES ('{value}') --faking sql here
                 """.format(
                 table=str(func), value=f"{column}-applied-{func}-with-{','.join(param_list)}"
             )
