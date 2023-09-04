@@ -1,3 +1,4 @@
 sqlmesh
 sqlmesh[web]
 sqlmesh[postgres]
+sqlmesh[github]

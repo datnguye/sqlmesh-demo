@@ -288,6 +288,8 @@ sqlmesh test
       - Seed gets stored in `_seeds` table, contains all seed data in a column 👀 -- definitely will have some limitation of size
       - Model schedule gets stored in `_intervals` table 👀
       - Run time per model or per run -- cannot find the info ❓
+  
+  - SqlMesh's Macros in another python package -- seems not support ❓
 
 ## 3. Setup CI
 

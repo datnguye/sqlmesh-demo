@@ -7,9 +7,9 @@ gateways:
         connection:
             type: postgres
             host: localhost
-            database: jf
-            user: sqlmesh
-            password: sqlmesh
+            database: ci
+            user: postgres
+            password: postgres
             port: 5432
 
 default_gateway: local_postgres
