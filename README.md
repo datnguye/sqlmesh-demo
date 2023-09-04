@@ -115,7 +115,8 @@ sqlmesh test
     # ----------------------------------------------------------------------
     # Ran 1 test in 0.162s
     # OK
-``
+```
+
 **First impressions**:
 
 - So far so good, the installation tooks quite a bit long, especially when installed the `pandas` 🏃‍♂️
@@ -295,6 +296,7 @@ sqlmesh test
       - Run time per model or per run -- cannot find the info ❓
   
   - SqlMesh's Macros in another python package -- seems not support ❓
+  - Column Level Lineage, yes it is available int `docs` site by using `sqlmesh ui` command 🎉
 
 ## 3. Setup CI/CD
 
