@@ -11,7 +11,8 @@ _Environment used_:
 - Windows 11
 - VSCode with dbt extensions installed
 
-**Quick final look of this POC:**
+👉 **Quick final look of this POC:** 👈
+
 ![CLL](assets/CLL-sqlmesh.png)
 
 ## 1. Getting familiar with sqlmesh CLI
