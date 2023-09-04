@@ -7,8 +7,12 @@ Actually try to mimic [dbt Jaffle Shop project](https://github.com/dbt-labs/jaff
 _Environment used_:
 
 - sqlmesh v0.30
+- postgres 15 as the gateway
 - Windows 11
 - VSCode with dbt extensions installed
+
+**Quick final look of this POC:**
+![CLL](assets/CLL-sqlmesh.png)
 
 ## 1. Getting familiar with sqlmesh CLI
 
@@ -110,8 +114,7 @@ sqlmesh test
     # ----------------------------------------------------------------------
     # Ran 1 test in 0.162s
     # OK
-```
-
+``
 **First impressions**:
 
 - So far so good, the installation tooks quite a bit long, especially when installed the `pandas` 🏃‍♂️
@@ -119,7 +122,8 @@ sqlmesh test
 - New concept with `plan` & `apply`, and the virtual environment defaults to `prod` 👍
 - It creates DuckDB files by default and do transformation smoothly 🎉
 - Project skeleton looks similar to dbt, but not quite, there are new things such as: `audit`, only `config.yml` (not dealing with `dbt_project.yml` and `profiles.yml`) 🎉
-- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file, same for source files, no model global config 👍
+- Everything based `model` e.g. for a seed file we need to create a corresponding model.sql file, same for source files 👀
+- No model global config 👀
 - Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here! 🎉
 - Great Web IDE with data lineage 🎉
 - Oh wow! `sqlmesh prompt` command - LLM 🎉
