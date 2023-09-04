@@ -10,8 +10,6 @@ _Environment used_:
 - Windows 11
 - VSCode with dbt extensions installed
 
-⏸️
-
 ## 1. Getting familiar with sqlmesh CLI
 
 ```bash
