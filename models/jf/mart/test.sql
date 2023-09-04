@@ -2,11 +2,13 @@ MODEL (
   name other.test,
   kind FULL,
   cron '@daily',
-  grain ARRAY[id],
+  grain ARRAY[id]
 );
 
-with cte as (
-  SELECT 1 as id,
+WITH cte AS (
+  SELECT
+    1 AS id
 )
-select *--@make_indicators('vehicle', ARRAY['truck', 'bus']), *
-from cte
+SELECT
+  * /* @make_indicators('vehicle', ARRAY['truck', 'bus']), * */
+FROM cte

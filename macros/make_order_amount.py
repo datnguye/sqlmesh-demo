@@ -1,14 +1,15 @@
 from sqlmesh import macro
 
+
 @macro()
 def make_order_amount(
     evaluator,
     payment_method_value: str,
     column__payment_method: str = "payment_method",
-    column__amount: str = "amount"
+    column__amount: str = "amount",
 ):
     """Build SQL block to calculate the order amount based on the payment method
-    
+
     For example:
     `SUM(CASE WHEN payment_method = 'credit_card' THEN amount ELSE 0 END) AS credit_card_amount`
 
@@ -20,7 +21,7 @@ def make_order_amount(
 
     Returns:
         str: SQL block
-    """    
+    """
     return f"""SUM(
         CASE 
             WHEN {column__payment_method} = '{payment_method_value}'
@@ -30,12 +31,13 @@ def make_order_amount(
     ) AS {payment_method_value}_amount
     """
 
+
 @macro()
 def make_order_amounts(
     evaluator,
-    payment_method_values = [], # NOTE: not working yet, sqlmesh just get hanging!!!
+    payment_method_values=[],  # NOTE: not working yet, sqlmesh just get hanging!!!
     column__payment_method: str = "payment_method",
-    column__amount: str = "amount"
+    column__amount: str = "amount",
 ):
     """Build SQL block to calculate the order amount based on the payment methods
 

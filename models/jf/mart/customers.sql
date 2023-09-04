@@ -3,11 +3,12 @@ MODEL (
   kind FULL,
   cron '@daily',
   grain ARRAY[customer_id],
-  audits ARRAY[
-    ASSERT_NOT_NULL(column = customer_id),
-    ASSERT_UNIQUE(columns = [customer_id])
-  ]
+  audits ARRAY[ASSERT_NOT_NULL(column = customer_id), ASSERT_UNIQUE(columns = ARRAY[customer_id])]
 );
+
+CREATE SCHEMA IF NOT EXISTS common;
+
+@create_masking_policy(common.mp_customer_name);
 
 WITH customers AS (
   SELECT
@@ -56,4 +57,6 @@ WITH customers AS (
 )
 SELECT
   *
-FROM final
+FROM final;
+
+@apply_masking_policy(last_name, common.mp_customer_name, first_name | last_name)

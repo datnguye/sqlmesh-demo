@@ -125,6 +125,7 @@ sqlmesh test
 - Each model has the individual config (kind, cron, grain) and the `SELECT` statement which are similar idea to dbt, but no Jinja syntax here! 🎉
 - Great Web IDE with data lineage 🎉
 - Oh wow! `sqlmesh prompt` command - LLM 🎉
+- No package ecosystem but it seems to utilize the python's eco one which is huge 💯
 
 **Struggling?!**:
 
@@ -218,7 +219,7 @@ sqlmesh test
     - I need to add yml file(s) to the `(repo)/tests` directory 👀
     - Might take time to implement because it requires to manually fake the data: both input and output ⚠️
     - Let's get familiar with `test` command e.g. `sqlmesh test -k test_full` 🏃
-    - It has a risk of new SQL Syntax (in the modern DWH) is not supported in DuckDB ⚠️
+    - It has a risk of new SQL Syntax (in the modern DWH) which might be not supported in DuckDB ⚠️
 
 - **Additional stuff**:
   - DRY with common functions
@@ -226,7 +227,69 @@ sqlmesh test
       - So far it's pefect 👍 until when trying with passing List arguments -- it is just hanging ⚠️
       - The syntax takes for a while to get familiar with (same expo when I started writting jinja) but the readability is better ✅
   - Column Level Security (aka Masking Policy), for example, in Snowflake ❓
-  - TBC
+    - Let's try [Pre/Post Statement](https://sqlmesh.readthedocs.io/en/stable/concepts/models/seed_models/#pre-and-post-statements) or [Statement](https://sqlmesh.readthedocs.io/en/stable/concepts/models/overview/#statements), better to get understanding of [Model Concept](https://sqlmesh.readthedocs.io/en/stable/concepts/models/sql_models/#model-ddl) first 👀
+      - Voila I successfully managed it with sqlmesh macro + pre/post statement ✅
+      - Here is a sample:
+        - `(repo)/macros/snow-mask-ddl/schema_name.masking_func_name.sql` -- multiple masking funcs created in the `snow-mask-ddl` dir
+
+        ```sql
+        CREATE MASKING POLICY IF NOT EXISTS @schema.mp_customer_name AS (
+            masked_column string
+        ) RETURNS string ->
+            CASE 
+                WHEN CURRENT_ROLE() IN ('ANALYST') THEN masked_column
+                    WHEN CURRENT_ROLE() IN ('SYSADMIN') THEN SHA2(masked_column)
+            ELSE '**********'
+        END;
+        ```
+
+        - 2 main macros to create&apply the func:
+
+        ```python
+        import os
+        from sqlmesh import macro
+        @macro()
+        def apply_masking_policy(evaluator, column: str, func: str, params: str):
+            param_list = str(params).split("|")
+            return """
+                INSERT INTO {table}(id) VALUES ('{value}')
+                """.format(
+                table=str(func), value=f"{column}-applied-{func}-with-{','.join(param_list)}"
+            )
+        @macro()
+        def create_masking_policy(evaluator, func: str):
+            ddl_dir = os.path.dirname(os.path.realpath(__file__))
+            ddl_file = f"{ddl_dir}/snow-mask-ddl/{func}.sql"
+            func_parts = str(func).split(".")
+            assert len(func_parts) == 2
+
+            schema = func_parts[0]
+            with open(ddl_file, "r") as file:
+                content = file.read()
+                return content.replace("@schema", schema)
+        ```
+
+        - And, use it the model
+
+        ```sql
+        MODEL (
+          name jf.customers,
+          ...
+        );
+
+        @create_masking_policy(common.mp_customer_name);
+
+        /model sql code here/;
+
+        @apply_masking_policy(last_name, common.mp_customer_name, first_name | last_name)
+        ```
+
+  - Metadata analysis
+    - State gets stored into the gateway database under the schema named `sqlmesh` by default 👍
+      - Snapshot gets stored in `_snapshots` table, one row per model & version 👍
+      - Seed gets stored in `_seeds` table, contains all seed data in a column 👀 -- definitely will have some limitation of size
+      - Model schedule gets stored in `_intervals` table 👀
+      - Run time per model or per run -- cannot find the info ❓
 
 ## 3. Setup CI
 

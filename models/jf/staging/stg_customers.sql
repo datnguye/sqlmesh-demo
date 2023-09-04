@@ -3,10 +3,7 @@ MODEL (
   kind VIEW,
   cron '@daily',
   grain ARRAY[customer_id],
-  audits ARRAY[
-    ASSERT_NOT_NULL(column = customer_id),
-    ASSERT_UNIQUE(columns = [customer_id])
-  ]
+  audits ARRAY[ASSERT_NOT_NULL(column = customer_id), ASSERT_UNIQUE(columns = ARRAY[customer_id])]
 );
 
 WITH source AS (

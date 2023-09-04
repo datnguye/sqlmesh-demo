@@ -3,11 +3,10 @@ MODEL (
   kind VIEW,
   cron '@daily',
   grain ARRAY[order_id, customer_id],
-  audits ARRAY[
-    ASSERT_NOT_NULL(column = order_id),
-    ASSERT_UNIQUE(columns = [order_id]),
-    ASSERT_ACCEPTED_VALUES(column = status, accepted_values = ARRAY['placed','shipped','completed','return_pending','returned']),
-  ]
+  audits ARRAY[ASSERT_NOT_NULL(column = order_id), ASSERT_UNIQUE(columns = ARRAY[order_id]), ASSERT_ACCEPTED_VALUES(
+    column = status,
+    accepted_values = ARRAY['placed', 'shipped', 'completed', 'return_pending', 'returned']
+  )]
 );
 
 WITH source AS (
