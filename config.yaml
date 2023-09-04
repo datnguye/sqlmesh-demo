@@ -11,6 +11,7 @@ gateways:
             user: postgres
             password: postgres
             port: 5432
+            concurrent_tasks: 1 # postgres race condition issue
 
 default_gateway: local_postgres
 

@@ -291,12 +291,26 @@ sqlmesh test
   
   - SqlMesh's Macros in another python package -- seems not support ❓
 
-## 3. Setup CI
+## 3. Setup CI/CD
 
-TBC
+CICD Bot is available for Github PR, let's try [getting started](https://sqlmesh.readthedocs.io/en/stable/integrations/github/#getting-started) 🚀
 
-## 4. Deployment
+Currently only Github Actions is supported ⚠️
 
-TBC
+- Only 1 job for CICD Bot defined in the workflow, when triggered, the bot will run 4 additional jobs:
+  - SQLMesh Unit Test
+    - Behind the scenes, it is the `sqlmesh test` ✅
+  - SQLMesh Has Required Approved
+    - If your pipeline has approval configs, it will require an approval before doing data gapless deployments to production ✅
+  - SQLMesh PR Environment Synced
+    - Behind the scenes, it creates/updates the PR Environment `sqlmesh_demo_{pull_request_number}` ✅
+    - Not sure what is the command behind, guessing `sqlmesh plan sqlmesh_demo_{pull_request_number} --auto-apply` 👀
+  - SQLMesh Prod Environment Synced
+    - Do the deployment of production, recommended to [add approval seeting](https://sqlmesh.readthedocs.io/en/stable/integrations/github/#enforce-that-certain-reviewers-have-approved-of-the-pr-before-it-can-be-merged) 👍
+    - Required 2 bits: ✅
+      - Approval (optional)
+      - SQLMesh PR Environment Synced done successfully
 
-Happy Engineering 🎉
+👉 [Sample PR here](https://github.com/datnguye/sqlmesh-demo/pull/1)
+
+**Happy Engineering** 🎉
