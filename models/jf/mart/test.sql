@@ -10,5 +10,6 @@ WITH cte AS (
     1 AS id
 )
 SELECT
-  * /* @make_indicators('vehicle', ARRAY['truck', 'bus']), *  trigger PR */
+  @make_indicators('vehicle', ARRAY['truck', 'bus']),
+  *
 FROM cte

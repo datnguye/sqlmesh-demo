@@ -229,6 +229,17 @@ sqlmesh test
   - DRY with common functions
     - Let's try [Python macro](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#python-macro-functions) 👀
       - So far it's pefect 👍 until when trying with passing List arguments -- it is just hanging ⚠️
+        - Oh! The docs is out of date, the team has advised the correct syntax:
+
+        ```python
+        @macro()
+        def make_indicators(evaluator, string_column, string_values):
+            return [
+                f"CASE WHEN {string_column} = {value} THEN {value} ELSE NULL END AS {string_column.name}_{value.name}"
+                for value in string_values.expressions
+            ]
+        ```
+
       - The syntax takes for a while to get familiar with (same expo when I started writting jinja) but the readability is better ✅
   - Column Level Security (aka Masking Policy), for example, in Snowflake ❓
     - Let's try [Pre/Post Statement](https://sqlmesh.readthedocs.io/en/stable/concepts/models/seed_models/#pre-and-post-statements) or [Statement](https://sqlmesh.readthedocs.io/en/stable/concepts/models/overview/#statements), better to get understanding of [Model Concept](https://sqlmesh.readthedocs.io/en/stable/concepts/models/sql_models/#model-ddl) first 👀
