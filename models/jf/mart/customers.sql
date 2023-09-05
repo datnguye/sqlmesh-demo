@@ -6,8 +6,6 @@ MODEL (
   audits ARRAY[ASSERT_NOT_NULL(column = customer_id), ASSERT_UNIQUE(columns = ARRAY[customer_id])]
 );
 
-CREATE SCHEMA IF NOT EXISTS common;
-
 @create_masking_policy(common.mp_customer_name);
 
 WITH customers AS (

@@ -26,6 +26,7 @@ WITH orders AS (
       @payment_methods,
       x -> SUM(CASE WHEN payment_method = x THEN amount ELSE 0 END) AS amount_@x
     ),
+    @make_order_amounts(@payment_methods),
     SUM(amount) AS total_amount
   FROM payments
   GROUP BY

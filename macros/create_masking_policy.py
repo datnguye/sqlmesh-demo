@@ -12,4 +12,8 @@ def create_masking_policy(evaluator, func: str):
     schema = func_parts[0]
     with open(ddl_file, "r") as file:
         content = file.read()
-        return content.replace("@schema", schema)
+        
+    return ";".join([
+        f"CREATE SCHEMA IF NOT EXISTS {schema}",
+        content.replace("@schema", schema)
+    ])

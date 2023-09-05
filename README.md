@@ -157,6 +157,36 @@ sqlmesh test
   - Aha! Semi-colonm is important bit here if it is not related to SQL e.g. model config, macros 👀
   - [Loop or Control flow ops](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#control-flow-operators) is cool even it takes sometime to get familiar with 👍
     - Found a limitation: `@EACH(@payment_methods, x -> ... as @x_amount)` will fail but work like a charm when change to `@EACH(@payment_methods, x -> ... as amount_@x)` ⚠️
+      - Let's write a sqlmesh macro for that ✅:
+
+      ```python
+      @macro()
+      def make_order_amounts(
+          evaluator,
+          payment_method_values=[],
+          column__payment_method: str = "payment_method",
+          column__amount: str = "amount",
+      ):
+          return [
+              f"""SUM(
+                  CASE 
+                      WHEN {column__payment_method} = {item}
+                          THEN {column__amount}
+                      ELSE 0
+                  END
+              ) AS {item.name}_amount
+              """
+              for item in payment_method_values.expressions
+          ]
+      ```
+
+      ```sql
+      @DEF(payment_methods, ARRAY['credit_card', 'coupon', 'bank_transfer', 'gift_card']);
+
+      select @make_order_amounts(@payment_methods)
+      ...
+      ```
+
   - Seems that the CLI logs was not exposed somewhere - hard to debug when something wrong happened 🤔
     - There we go! Let's set the env variable `SQLMESH_DEBUG=1` ✅
   - In the model kind of `INCREMENTAL_BY_UNIQUE_KEY`, the `unique_key` config is a tuple e.g. `(key1, key2)`, if I made it as an array `[key1, key2]`, it would hang your `sqlmesh` command(s) ⚠️
@@ -229,7 +259,7 @@ sqlmesh test
   - DRY with common functions
     - Let's try [Python macro](https://sqlmesh.readthedocs.io/en/stable/concepts/macros/sqlmesh_macros/#python-macro-functions) 👀
       - So far it's pefect 👍 until when trying with passing List arguments -- it is just hanging ⚠️
-        - Oh! The docs is out of date, the team has advised the correct syntax:
+        - Oh! The docs is out of date, the team has advised the correct syntax ✅:
 
         ```python
         @macro()
